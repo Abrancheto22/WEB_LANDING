@@ -1,0 +1,103 @@
+---
+export interface Props {
+  title: string;
+  description: string;
+  price: string;
+  rating: number;
+  icon: string;
+  badge?: string;
+  color?: string;
+  delay?: number;
+}
+
+const { title, description, price, rating, icon, badge, color = "indigo", delay = 0 } = Astro.props;
+
+const getBgColor = () => {
+  switch (color) {
+    case "indigo":
+      return "bg-indigo-600";
+    case "blue":
+      return "bg-blue-600";
+    case "purple":
+      return "bg-purple-600";
+    default:
+      return "bg-indigo-600";
+  }
+};
+
+const getBadgeColor = () => {
+  switch (color) {
+    case "indigo":
+      return "text-indigo-600";
+    case "blue":
+      return "text-blue-600";
+    case "purple":
+      return "text-purple-600";
+    default:
+      return "text-indigo-600";
+  }
+};
+
+const getIcon = () => {
+  switch (icon) {
+    case "laptop":
+      return "fas fa-laptop";
+    case "brain":
+      return "fas fa-brain";
+    case "rocket":
+      return "fas fa-rocket";
+    default:
+      return "fas fa-laptop";
+  }
+};
+
+const renderStars = () => {
+  const stars = [];
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating % 1 !== 0;
+  
+  for (let i = 0; i < fullStars; i++) {
+    stars.push('<i class="fas fa-star"></i>');
+  }
+  
+  if (hasHalfStar) {
+    stars.push('<i class="fas fa-star-half-alt"></i>');
+  }
+  
+  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+  for (let i = 0; i < emptyStars; i++) {
+    stars.push('<i class="far fa-star"></i>');
+  }
+  
+  return stars.join('');
+};
+---
+
+<div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2" data-aos="fade-up" data-aos-delay={delay}>
+  <div class="relative h-48 overflow-hidden">
+    <div class={`absolute inset-0 ${getBgColor()} opacity-90 flex items-center justify-center`}>
+      <i class={`${getIcon()} text-6xl text-white opacity-20`}></i>
+    </div>
+    {badge && (
+      <div class={`absolute top-4 left-4 bg-white py-1 px-3 rounded-full text-sm font-medium ${getBadgeColor()}`}>
+        {badge}
+      </div>
+    )}
+  </div>
+  
+  <div class="p-6">
+    <h3 class="text-xl font-bold text-gray-800 mb-2">{title}</h3>
+    <p class="text-gray-600 mb-4">{description}</p>
+    <div class="flex items-center justify-between">
+      <span class="text-indigo-600 font-bold">${price} USD</span>
+      <div class="flex text-yellow-400">
+        <Fragment set:html={renderStars()} />
+        <span class="text-gray-700 ml-1">{rating.toFixed(1)}</span>
+      </div>
+    </div>
+    <button class="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg transition-colors">
+      Inscribirme ahora
+    </button>
+  </div>
+</div>
+

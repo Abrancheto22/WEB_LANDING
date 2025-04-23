@@ -1,0 +1,23 @@
+---
+const stats = [
+  { icon: "fas fa-users", value: 2500, label: "Docentes capacitados" },
+  { icon: "fas fa-book", value: 50, label: "Cursos disponibles" },
+  { icon: "fas fa-certificate", value: 95, label: "% de aprobación" },
+  { icon: "fas fa-globe", value: 12, label: "Países" },
+];
+---
+
+<section id="stats-section" class="py-16 bg-indigo-600 text-white">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+      {stats.map((stat, index) => (
+        <div class="p-6 rounded-lg" data-aos="zoom-in" data-aos-duration="800" data-aos-delay={index * 200}>
+          <i class={`${stat.icon} text-4xl mb-4 text-indigo-200`}></i>
+          <h3 class="text-4xl font-bold mb-2 counter" data-target={stat.value}>0</h3>
+          <p class="text-indigo-200">{stat.label}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+

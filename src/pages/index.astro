@@ -1,11 +1,652 @@
 ---
-import Welcome from '../components/Welcome.astro';
+// Importaciones
+import '../styles/global.css';
 import Layout from '../layouts/Layout.astro';
+import StatsCounter from '../components/StatsCounter.astro';
+import CourseCard from '../components/CourseCard.astro';
+import TestimonialSlider from '../components/TestimonialSlider.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import Imagen from '../assets/Docentes.jpg';
+// Datos para las secciones
+const courses = [
+  {
+    title: "Tecnologías Digitales en el Aula",
+    description: "Aprende a integrar herramientas digitales en tus clases para mejorar el aprendizaje de tus estudiantes.",
+    price: "149",
+    rating: 5.0,
+    icon: "laptop",
+    badge: "Más popular",
+    color: "indigo"
+  },
+  {
+    title: "Neurociencia y Aprendizaje",
+    description: "Conoce cómo funciona el cerebro durante el aprendizaje y aplica estrategias basadas en neurociencia.",
+    price: "129",
+    rating: 4.7,
+    icon: "brain",
+    color: "blue"
+  },
+  {
+    title: "Aula Invertida (Flipped Classroom)",
+    description: "Transforma tu metodología de enseñanza con el modelo de aula invertida para un aprendizaje más activo.",
+    price: "159",
+    rating: 4.9,
+    icon: "rocket",
+    badge: "Nuevo",
+    color: "purple"
+  }
+];
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const testimonials = [
+  {
+    content: "Los cursos de DocentesPro han transformado completamente mi forma de enseñar. Mis estudiantes ahora están más motivados y comprometidos con su aprendizaje. ¡Totalmente recomendado!",
+    name: "Carlos Rodríguez",
+    role: "Profesor de Matemáticas",
+    rating: 5
+  },
+  {
+    content: "La metodología es extraordinaria. Aprendo haciendo y con feedback real. Mi práctica docente ha mejorado enormemente y mis estudiantes lo notan. Definitivamente vale cada centavo.",
+    name: "Mariana López",
+    role: "Profesora de Ciencias",
+    rating: 5
+  },
+  {
+    content: "Lo que más valoro es la comunidad de aprendizaje. Poder compartir experiencias con otros docentes y recibir orientación de los tutores ha sido invaluable para mi desarrollo profesional.",
+    name: "Alejandro Martínez",
+    role: "Profesor de Historia",
+    rating: 4.5
+  }
+];
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="DocentesPro - Cursos para el desarrollo profesional docente">
+  <main class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <!-- Navbar -->
+    <nav class="fixed w-full bg-white/90 backdrop-blur-md py-4 px-6 shadow-sm z-50">
+      <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <a href="#" class="text-2xl font-bold text-indigo-600 flex items-center gap-2">
+          <i class="fas fa-graduation-cap text-3xl"></i>
+          <span>DocentesPro</span>
+        </a>
+        
+        <div class="hidden md:flex space-x-8">
+          <a href="#inicio" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Inicio</a>
+          <a href="#cursos" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Cursos</a>
+          <a href="#metodologia" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Metodología</a>
+          <a href="#testimonios" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Testimonios</a>
+          <a href="#contacto" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Contacto</a>
+        </div>
+        
+        <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-full shadow-lg hover:shadow-indigo-300/50 transition-all transform hover:scale-105">
+          Iniciar/Resgistrarse
+        </button>
+        
+        <button id="menu-button" class="md:hidden text-gray-700 focus:outline-none">
+          <i class="fas fa-bars text-2xl"></i>
+        </button>
+      </div>
+      
+      <!-- Menú móvil -->
+      <div id="mobile-menu" class="hidden md:hidden bg-white absolute left-0 right-0 mt-4 p-4 shadow-lg rounded-b-lg">
+        <div class="flex flex-col space-y-3">
+          <a href="#inicio" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Inicio</a>
+          <a href="#cursos" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Cursos</a>
+          <a href="#metodologia" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Metodología</a>
+          <a href="#testimonios" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Testimonios</a>
+          <a href="#contacto" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Contacto</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="pt-32 pb-20 relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-96 h-96 bg-indigo-300 rounded-full filter blur-3xl opacity-20 -z-10 animate-blob"></div>
+      <div class="absolute bottom-0 left-20 w-72 h-72 bg-blue-300 rounded-full filter blur-3xl opacity-20 -z-10 animate-blob animation-delay-2000"></div>
+      
+      <div class="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row items-center gap-12">
+        <div class="lg:w-1/2" data-aos="fade-right" data-aos-duration="1000">
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 leading-tight">
+            Transforma tu <span class="text-indigo-600">enseñanza</span> con cursos <span class="text-indigo-600">innovadores</span>
+          </h1>
+          <p class="mt-6 text-lg text-gray-600">
+            Capacitación de alta calidad diseñada específicamente para docentes que desean innovar y mejorar sus habilidades pedagógicas en la era digital.
+          </p>
+          <div class="mt-8 flex flex-col sm:flex-row gap-4">
+            <a href="#cursos" class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-full shadow-lg hover:shadow-indigo-300/50 text-center font-medium transition-all transform hover:scale-105">
+              Ver cursos
+            </a>
+            <a href="#metodologia" class="bg-white text-indigo-600 border-2 border-indigo-600 px-8 py-3 rounded-full shadow-lg hover:shadow-indigo-300/50 text-center font-medium transition-all transform hover:scale-105">
+              Nuestra metodología
+            </a>
+          </div>
+          
+          <div class="mt-12 flex items-center gap-4">
+            <div class="flex -space-x-4">
+              <img class="w-10 h-10 rounded-full border-2 border-white" src="/placeholder.svg" width="40" height="40" alt="Docente">
+              <img class="w-10 h-10 rounded-full border-2 border-white" src="/placeholder.svg" width="40" height="40" alt="Docente">
+              <img class="w-10 h-10 rounded-full border-2 border-white" src="/placeholder.svg" width="40" height="40" alt="Docente">
+              <img class="w-10 h-10 rounded-full border-2 border-white" src="/placeholder.svg" width="40" height="40" alt="Docente">
+            </div>
+            <div>
+              <p class="text-gray-700 font-medium">+2,500 docentes capacitados</p>
+              <div class="flex text-yellow-400">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <span class="text-gray-700 ml-2">4.9/5</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="lg:w-1/2 relative" data-aos="fade-left" data-aos-duration="1000">
+          <div class="absolute inset-0 bg-indigo-600 rounded-lg transform rotate-6 scale-105 opacity-10"></div>
+          <div class="relative bg-white p-2 rounded-lg shadow-xl overflow-hidden">
+            <img src="/placeholder.svg" width="600" height="400" alt="Docentes aprendiendo" class="w-full h-auto rounded">
+            <div class="absolute inset-0 flex items-center justify-center">
+              <button class="bg-indigo-600 hover:bg-indigo-700 text-white w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-all transform hover:scale-110">
+                <i class="fas fa-play text-xl"></i>
+              </button>
+            </div>
+          </div>
+          
+          <div class="absolute -bottom-10 -right-10 bg-white p-4 rounded-lg shadow-xl transform rotate-3" data-aos="fade-up" data-aos-delay="300">
+            <div class="flex items-center gap-4">
+              <div class="bg-green-100 p-3 rounded-full">
+                <i class="fas fa-check text-green-600"></i>
+              </div>
+              <div>
+                <p class="font-bold text-gray-800">Certificación oficial</p>
+                <p class="text-gray-600 text-sm">Válida para tu carrera docente</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <StatsCounter />
+
+    <!-- Courses Section -->
+    <section id="cursos" class="py-20">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16" data-aos="fade-up">
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Nuestros cursos destacados</h2>
+          <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
+            Diseñados por expertos en pedagogía y tecnología educativa para ayudarte a innovar en el aula
+          </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {courses.map((course, index) => (
+            <CourseCard 
+              title={course.title}
+              description={course.description}
+              price={course.price}
+              rating={course.rating}
+              icon={course.icon}
+              badge={course.badge}
+              color={course.color}
+              delay={index * 100}
+            />
+          ))}
+        </div>
+        
+        <div class="text-center mt-12">
+          <a href="#" class="inline-flex items-center text-indigo-600 font-medium hover:text-indigo-800 transition-colors">
+            Ver todos los cursos
+            <i class="fas fa-arrow-right ml-2"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Methodology Section -->
+    <section id="metodologia" class="py-20 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16" data-aos="fade-up">
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Nuestra metodología</h2>
+          <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
+            La formación que ofrecemos se basa en principios pedagógicos y andragógicos modernos
+          </p>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div data-aos="fade-right">
+            <div class="relative">
+              <div class="absolute inset-0 bg-indigo-600 rounded-lg transform -rotate-6 scale-105 opacity-10"></div>
+              <img src={Imagen.src} width="600" height="400" alt="Docentes colaborando" class="relative rounded-lg shadow-lg">
+              
+              <div class="absolute -bottom-8 -left-8 bg-white p-4 rounded-lg shadow-xl" data-aos="fade-up" data-aos-delay="300">
+                <div class="flex items-center gap-4">
+                  <div class="bg-indigo-100 p-3 rounded-full">
+                    <i class="fas fa-clock text-indigo-600"></i>
+                  </div>
+                  <div>
+                    <p class="font-bold text-gray-800">Aprendizaje a tu ritmo</p>
+                    <p class="text-gray-600 text-sm">Acceso 24/7 a los contenidos</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div data-aos="fade-left">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+              <div class="tabs-container">
+                <div class="flex border-b">
+                  <button class="tab-button active py-4 px-6 border-b-2 border-indigo-600 text-indigo-600 font-medium" data-tab="practica">
+                    Práctica y Feedback
+                  </button>
+                  <button class="tab-button py-4 px-6 text-gray-500 font-medium" data-tab="comunidad">
+                    Comunidad de Aprendizaje
+                  </button>
+                  <button class="tab-button py-4 px-6 text-gray-500 font-medium" data-tab="certificacion">
+                    Certificación
+                  </button>
+                </div>
+                
+                <div class="tab-content py-6 active" id="practica">
+                  <div class="space-y-6">
+                    <div class="flex gap-4">
+                      <div class="bg-indigo-100 h-12 w-12 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-sync-alt text-indigo-600 text-xl"></i>
+                      </div>
+                      <div>
+                        <h3 class="text-xl font-bold text-gray-800">Ciclo de práctica reflexiva</h3>
+                        <p class="text-gray-600 mt-2">
+                          Nuestros cursos se basan en la práctica constante y la reflexión. Aprenderás haciendo y recibiendo retroalimentación inmediata para mejorar tus habilidades.
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div class="flex gap-4">
+                      <div class="bg-indigo-100 h-12 w-12 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-comments text-indigo-600 text-xl"></i>
+                      </div>
+                      <div>
+                        <h3 class="text-xl font-bold text-gray-800">Retroalimentación personalizada</h3>
+                        <p class="text-gray-600 mt-2">
+                          Nuestros tutores expertos te brindarán feedback detallado sobre tus proyectos y actividades, ayudándote a identificar oportunidades de mejora.
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div class="flex gap-4">
+                      <div class="bg-indigo-100 h-12 w-12 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-lightbulb text-indigo-600 text-xl"></i>
+                      </div>
+                      <div>
+                        <h3 class="text-xl font-bold text-gray-800">Aplicación inmediata</h3>
+                        <p class="text-gray-600 mt-2">
+                          Todas las actividades están diseñadas para que puedas aplicarlas inmediatamente en tu aula, viendo resultados desde el primer día.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="tab-content py-6 hidden" id="comunidad">
+                  <div class="space-y-6">
+                    <div class="flex gap-4">
+                      <div class="bg-indigo-100 h-12 w-12 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-users text-indigo-600 text-xl"></i>
+                      </div>
+                      <div>
+                        <h3 class="text-xl font-bold text-gray-800">Red de profesionales</h3>
+                        <p class="text-gray-600 mt-2">
+                          Conecta con docentes de todo el mundo que comparten tus mismos intereses y desafíos profesionales.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="tab-content py-6 hidden" id="certificacion">
+                  <div class="space-y-6">
+                    <div class="flex gap-4">
+                      <div class="bg-indigo-100 h-12 w-12 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-certificate text-indigo-600 text-xl"></i>
+                      </div>
+                      <div>
+                        <h3 class="text-xl font-bold text-gray-800">Certificación reconocida</h3>
+                        <p class="text-gray-600 mt-2">
+                          Obtén certificados válidos para tu carrera profesional docente, reconocidos por instituciones educativas.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonios" class="py-20">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16" data-aos="fade-up">
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Lo que dicen nuestros alumnos</h2>
+          <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
+            Docentes que ya han transformado su práctica con nuestros cursos
+          </p>
+        </div>
+        
+        <TestimonialSlider testimonials={testimonials} />
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 bg-indigo-600 relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-96 h-96 bg-indigo-500 rounded-full filter blur-3xl opacity-30 -z-10"></div>
+      <div class="absolute bottom-0 left-20 w-72 h-72 bg-blue-500 rounded-full filter blur-3xl opacity-30 -z-10"></div>
+      
+      <div class="max-w-7xl mx-auto px-6 text-center text-white" data-aos="zoom-in">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">¿Listo para transformar tu enseñanza?</h2>
+        <p class="text-xl text-indigo-100 max-w-3xl mx-auto mb-10">
+          Únete a miles de docentes que ya están innovando en sus aulas y mejorando los resultados de aprendizaje de sus estudiantes.
+        </p>
+        
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+          <a href="#" class="bg-white text-indigo-600 hover:bg-indigo-50 px-8 py-4 rounded-full shadow-lg text-center font-bold text-lg transition-all transform hover:scale-105">
+            Ver todos los cursos
+          </a>
+          <a href="#contacto" class="bg-transparent text-white border-2 border-white px-8 py-4 rounded-full shadow-lg text-center font-bold text-lg transition-all transform hover:scale-105">
+            Solicitar información
+          </a>
+        </div>
+        
+        <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div class="flex flex-col items-center">
+            <div class="bg-white/20 p-4 rounded-full mb-4">
+              <i class="fas fa-certificate text-2xl"></i>
+            </div>
+            <h3 class="font-bold">Certificación oficial</h3>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contacto" class="py-20 relative bg-fixed bg-cover" style="background-image: url('/placeholder.svg');">
+      <div class="absolute inset-0 bg-gray-900 opacity-80"></div>
+      
+      <div class="max-w-7xl mx-auto px-6 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+          <div class="text-white" data-aos="fade-right">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">¿Tienes preguntas?</h2>
+            <p class="text-lg text-gray-300 mb-8">
+              Nuestro equipo está listo para ayudarte a encontrar el curso perfecto para tu desarrollo profesional.
+            </p>
+            
+            <div class="mb-10 space-y-6">
+              <div class="flex items-start gap-4">
+                <div class="bg-indigo-600 p-3 rounded-lg">
+                  <i class="fas fa-map-marker-alt text-white"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold mb-1">Dirección</h3>
+                  <p class="text-gray-300">Av. Educación 1234, Ciudad Innovación</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start gap-4">
+                <div class="bg-indigo-600 p-3 rounded-lg">
+                  <i class="fas fa-envelope text-white"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold mb-1">Email</h3>
+                  <p class="text-gray-300">info@docentespro.edu</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start gap-4">
+                <div class="bg-indigo-600 p-3 rounded-lg">
+                  <i class="fas fa-phone text-white"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold mb-1">Teléfono</h3>
+                  <p class="text-gray-300">+1 (555) 123-4567</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="flex gap-4">
+              <a href="#" class="bg-white text-indigo-600 hover:bg-indigo-100 w-10 h-10 rounded-full flex items-center justify-center transition-colors">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" class="bg-white text-indigo-600 hover:bg-indigo-100 w-10 h-10 rounded-full flex items-center justify-center transition-colors">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="#" class="bg-white text-indigo-600 hover:bg-indigo-100 w-10 h-10 rounded-full flex items-center justify-center transition-colors">
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a href="#" class="bg-white text-indigo-600 hover:bg-indigo-100 w-10 h-10 rounded-full flex items-center justify-center transition-colors">
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+            </div>
+          </div>
+          
+          <div data-aos="fade-left">
+            <div class="bg-white rounded-xl shadow-xl p-8">
+              <h3 class="text-2xl font-bold text-gray-800 mb-6">Solicita información</h3>
+              
+              <form class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label for="name" class="block text-gray-700 font-medium mb-2">Nombre</label>
+                    <input type="text" id="name" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                  </div>
+                  
+                  <div>
+                    <label for="email" class="block text-gray-700 font-medium mb-2">Email</label>
+                    <input type="email" id="email" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                  </div>
+                </div>
+                
+                <div>
+                  <label for="phone" class="block text-gray-700 font-medium mb-2">Teléfono</label>
+                  <input type="tel" id="phone" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                </div>
+                
+                <div>
+                  <label for="course" class="block text-gray-700 font-medium mb-2">Curso de interés</label>
+                  <select id="course" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    <option value="">Selecciona un curso</option>
+                    <option value="tech">Tecnologías Digitales en el Aula</option>
+                    <option value="neuro">Neurociencia y Aprendizaje</option>
+                    <option value="flipped">Aula Invertida (Flipped Classroom)</option>
+                    <option value="other">Otro</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label for="message" class="block text-gray-700 font-medium mb-2">Mensaje</label>
+                  <textarea id="message" rows="4" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></textarea>
+                </div>
+                
+                <div>
+                  <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-6 rounded-lg shadow-lg transition-colors font-medium">
+                    Enviar mensaje
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-16 pb-8">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+          <div>
+            <a href="#" class="text-2xl font-bold flex items-center gap-2 mb-6">
+              <i class="fas fa-graduation-cap text-3xl text-indigo-500"></i>
+              <span>DocentesPro</span>
+            </a>
+            <p class="text-gray-400 mb-6">
+              Transformando la educación a través de la formación docente de calidad.
+            </p>
+            <div class="flex gap-4">
+              <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+            </div>
+          </div>
+          
+          <div>
+            <h3 class="text-lg font-bold mb-6">Cursos</h3>
+            <ul class="space-y-4">
+              <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Tecnologías Digitales</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Neurociencia y Aprendizaje</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Aula Invertida</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Evaluación Formativa</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Aprendizaje Basado en Proyectos</a></li>
+            </ul>
+          </div>
+          
+          <div>
+            <h3 class="text-lg font-bold mb-6">Enlaces</h3>
+            <ul class="space-y-4">
+              <li><a href="#inicio" class="text-gray-400 hover:text-white transition-colors">Inicio</a></li>
+              <li><a href="#cursos" class="text-gray-400 hover:text-white transition-colors">Cursos</a></li>
+              <li><a href="#metodologia" class="text-gray-400 hover:text-white transition-colors">Metodología</a></li>
+              <li><a href="#testimonios" class="text-gray-400 hover:text-white transition-colors">Testimonios</a></li>
+              <li><a href="#contacto" class="text-gray-400 hover:text-white transition-colors">Contacto</a></li>
+            </ul>
+          </div>
+          
+          <div>
+            <h3 class="text-lg font-bold mb-6">Inscríbete al boletín</h3>
+            <p class="text-gray-400 mb-4">
+              Recibe actualizaciones y contenido exclusivo para docentes.
+            </p>
+            <form class="flex gap-2">
+              <input type="email" placeholder="Tu email" class="bg-gray-800 text-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 flex-grow">
+              <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+        
+        <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+          <p class="text-gray-400 mb-4 md:mb-0">
+            &copy; {new Date().getFullYear()} DocentesPro. Todos los derechos reservados.
+          </p>
+          <div class="flex gap-6">
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">Políticas de privacidad</a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">Términos de servicio</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- WhatsApp Button -->
+    <WhatsAppButton />
+  </main>
 </Layout>
+
+<script>
+  // Mobile menu toggle
+  document.addEventListener('DOMContentLoaded', () => {
+    const menuButton = document.getElementById('menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    if (menuButton && mobileMenu) {
+      menuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+    }
+    
+    // Tabs functionality
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // Remove active class from all buttons and contents
+        tabButtons.forEach(btn => btn.classList.remove('active', 'border-indigo-600', 'text-indigo-600'));
+        tabButtons.forEach(btn => btn.classList.add('text-gray-500'));
+        tabContents.forEach(content => content.classList.add('hidden'));
+        tabContents.forEach(content => content.classList.remove('active'));
+        
+        // Add active class to clicked button and corresponding content
+        button.classList.add('active', 'border-indigo-600', 'text-indigo-600');
+        button.classList.remove('text-gray-500');
+        const tabId = button.getAttribute('data-tab');
+        const activeContent = document.getElementById(tabId);
+        if (activeContent) {
+          activeContent.classList.add('active');
+          activeContent.classList.remove('hidden');
+        }
+      });
+    });
+    
+    // Initialize AOS
+    if (typeof AOS !== 'undefined') {
+      AOS.init({
+        duration: 800,
+        once: true
+      });
+    }
+    
+    // Counter animation
+    const animateCounters = () => {
+      const counters = document.querySelectorAll('.counter');
+      const speed = 200;
+      
+      counters.forEach(counter => {
+        const target = parseInt(counter.getAttribute('data-target') || '0');
+        let count = 0;
+        const increment = Math.ceil(target / speed);
+        
+        const updateCount = () => {
+          if (count < target) {
+            count += increment;
+            counter.textContent = count > target ? target.toString() : count.toString();
+            setTimeout(updateCount, 1);
+          } else {
+            counter.textContent = target.toString();
+          }
+        };
+        
+        updateCount();
+      });
+    };
+    
+    // Trigger counter animation when in view
+    const observeCounters = () => {
+      const countersSection = document.querySelector('#stats-section');
+      if (!countersSection) return;
+      
+      const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          animateCounters();
+          observer.unobserve(countersSection);
+        }
+      }, { threshold: 0.5 });
+      
+      observer.observe(countersSection);
+    };
+    
+    observeCounters();
+  });
+</script>
+
