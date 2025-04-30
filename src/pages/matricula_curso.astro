@@ -1,0 +1,112 @@
+---
+import '../styles/global.css';
+---
+<html lang="es">
+  <head>
+    <title>Inscripción al Curso</title>
+    <script src="https://cdn.tailwindcss.com"></script> <!-- Asegúrate de tener TailwindCSS configurado -->
+  </head>
+  <body class="bg-gray-100 font-sans">
+
+    <!-- Botón flotante -->
+    <div class="fixed bottom-5 right-5 z-50">
+      <button id="openForm" class="bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-blue-700 transition-all transform hover:scale-105">
+        Inscribirme ahora
+      </button>
+    </div>
+
+    <!-- Modal / Formulario -->
+    <div id="formModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex justify-center items-center z-50">
+      <div class="bg-white p-8 rounded-xl w-full max-w-2xl shadow-2xl overflow-y-auto max-h-[90vh]">
+        <h2 class="text-2xl font-bold text-indigo-600 mb-6">Registro / Inscripción</h2>
+
+        <!-- Login -->
+        <div id="loginSection">
+          <p class="text-gray-700 mb-4">Inicia sesión para continuar:</p>
+          <div class="flex flex-col gap-4">
+            <button class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-all">
+              Iniciar con Google
+            </button>
+            <button class="bg-blue-800 text-white px-6 py-3 rounded-lg hover:bg-blue-900 transition-all">
+              Iniciar con Facebook
+            </button>
+            <input type="email" placeholder="Correo electrónico" class="border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required />
+            <button class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-all" id="emailLogin">Iniciar sesión</button>
+          </div>
+        </div>
+
+        <!-- Vista previa curso -->
+        <div id="coursePreview" class="hidden mt-6">
+          <img src="/img/curso.jpg" alt="Curso" class="w-full rounded-lg shadow-lg mb-4">
+          <h3 class="text-xl font-semibold text-gray-800">Curso de Desarrollo Web</h3>
+          <p class="text-gray-600">Aprende a construir sitios web modernos con HTML, CSS, JavaScript y frameworks.</p>
+          <p class="text-lg font-bold mt-2 text-indigo-600">Costo: S/ 150.00</p>
+
+          <!-- Formulario de pago -->
+          <form class="mt-6 space-y-4" id="paymentForm">
+            <label class="block text-gray-700">
+              Medio de pago:
+              <select class="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" name="metodo_pago" required>
+                <option value="">Selecciona uno</option>
+                <option>Yape</option>
+                <option>Transferencia</option>
+                <option>Depósito</option>
+              </select>
+            </label>
+
+            <label class="block text-gray-700">
+              Subir captura del pago:
+              <input type="file" accept="image/*" class="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" name="comprobante" required />
+            </label>
+
+            <label class="block text-gray-700">
+              Número de operación:
+              <input type="text" class="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" name="numero_operacion" required />
+            </label>
+
+            <label class="block text-gray-700">
+              Fecha de pago:
+              <input type="date" class="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" name="fecha_pago" required />
+            </label>
+
+            <!-- Botones -->
+            <div class="flex justify-end gap-4 pt-6">
+              <button type="submit" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-all">Matricular</button>
+              <button type="reset" class="bg-yellow-500 text-white px-6 py-3 rounded-lg hover:bg-yellow-600 transition-all">Borrar</button>
+              <button type="button" id="cancelForm" class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-all">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const openBtn = document.getElementById('openForm');
+      const modal = document.getElementById('formModal');
+      const cancelBtn = document.getElementById('cancelForm');
+      const loginSection = document.getElementById('loginSection');
+      const coursePreview = document.getElementById('coursePreview');
+      const emailLogin = document.getElementById('emailLogin');
+
+      openBtn.onclick = () => modal.classList.remove('hidden');
+      cancelBtn.onclick = () => modal.classList.add('hidden');
+
+      // Simular inicio de sesión exitoso solo para el botón de correo electrónico
+      emailLogin.addEventListener('click', function(e) {
+        e.preventDefault();
+        loginSection.classList.add('hidden');
+        coursePreview.classList.remove('hidden');
+      });
+
+      // Validación adicional al enviar el formulario
+      const paymentForm = document.getElementById('paymentForm');
+      paymentForm.addEventListener('submit', function(e) {
+        if (!paymentForm.checkValidity()) {
+          e.preventDefault();
+          alert('Por favor, complete todos los campos requeridos.');
+        }
+      });
+    </script>
+
+  </body>
+</html>
