@@ -1,14 +1,40 @@
 ---
 import '../styles/global.css';
+import Layout from '../layouts/Layout.astro';
 ---
-<html lang="es">
-  <head>
-    <title>Inscripción al Curso</title>
-    <script src="https://cdn.tailwindcss.com"></script> <!-- Asegúrate de tener TailwindCSS configurado -->
-  </head>
-  <body class="bg-gray-100 font-sans">
 
-    <!-- Botón flotante -->
+
+<Layout title="Inscripción al Curso - DocentesPro">
+  <main class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <!-- Navbar -->
+    <nav class="fixed w-full bg-white/90 backdrop-blur-md py-4 px-6 shadow-sm z-50">
+      <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <a href="/" class="text-2xl font-bold text-indigo-600 flex items-center gap-2">
+          <i class="fas fa-graduation-cap text-3xl"></i>
+          <span>DocentesPro</span>
+        </a>
+        
+        <div class="hidden md:flex space-x-8">
+          <a href="/" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Inicio</a>
+          <a href="/cursos" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Cursos</a>
+          <a href="#metodologia" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Metodología</a>
+          <a href="#testimonios" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Testimonios</a>
+          <a href="#contacto" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Contacto</a>
+        </div>
+        
+        <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-full shadow-lg hover:shadow-indigo-300/50 transition-all transform hover:scale-105">
+          Iniciar/Resgistrarse
+        </button>
+        
+        <button id="menu-button" class="md:hidden text-gray-700 focus:outline-none">
+          <i class="fas fa-bars text-2xl"></i>
+        </button>
+      </div>
+    </nav>
+    <br>    
+
+    <section>
+       <!-- Botón flotante -->
     <div class="fixed bottom-5 right-5 z-50">
       <button id="openForm" class="bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-blue-700 transition-all transform hover:scale-105">
         Inscribirme ahora
@@ -19,6 +45,7 @@ import '../styles/global.css';
     <div id="formModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex justify-center items-center z-50">
       <div class="bg-white p-8 rounded-xl w-full max-w-2xl shadow-2xl overflow-y-auto max-h-[90vh]">
         <h2 class="text-2xl font-bold text-indigo-600 mb-6">Registro / Inscripción</h2>
+        <i class="fas fa-xmark"> <a href="/matricula_curso"></a></i>
 
         <!-- Login -->
         <div id="loginSection">
@@ -79,34 +106,34 @@ import '../styles/global.css';
         </div>
       </div>
     </div>
+    </section>
+    </main>
+</Layout>
 
-    <script>
-      const openBtn = document.getElementById('openForm');
-      const modal = document.getElementById('formModal');
-      const cancelBtn = document.getElementById('cancelForm');
-      const loginSection = document.getElementById('loginSection');
-      const coursePreview = document.getElementById('coursePreview');
-      const emailLogin = document.getElementById('emailLogin');
+<script>
+  const openBtn = document.getElementById('openForm');
+  const modal = document.getElementById('formModal');
+  const cancelBtn = document.getElementById('cancelForm');
+  const loginSection = document.getElementById('loginSection');
+  const coursePreview = document.getElementById('coursePreview');
+  const emailLogin = document.getElementById('emailLogin');
 
-      openBtn.onclick = () => modal.classList.remove('hidden');
-      cancelBtn.onclick = () => modal.classList.add('hidden');
+  openBtn.onclick = () => modal.classList.remove('hidden');
+  cancelBtn.onclick = () => modal.classList.add('hidden');
 
-      // Simular inicio de sesión exitoso solo para el botón de correo electrónico
-      emailLogin.addEventListener('click', function(e) {
-        e.preventDefault();
-        loginSection.classList.add('hidden');
-        coursePreview.classList.remove('hidden');
-      });
+  // Simular inicio de sesión exitoso solo para el botón de correo electrónico
+  emailLogin.addEventListener('click', function(e) {
+    e.preventDefault();
+    loginSection.classList.add('hidden');
+    coursePreview.classList.remove('hidden');
+  });
 
-      // Validación adicional al enviar el formulario
-      const paymentForm = document.getElementById('paymentForm');
-      paymentForm.addEventListener('submit', function(e) {
-        if (!paymentForm.checkValidity()) {
-          e.preventDefault();
-          alert('Por favor, complete todos los campos requeridos.');
-        }
-      });
-    </script>
-
-  </body>
-</html>
+  // Validación adicional al enviar el formulario
+  const paymentForm = document.getElementById('paymentForm');
+  paymentForm.addEventListener('submit', function(e) {
+    if (!paymentForm.checkValidity()) {
+      e.preventDefault();
+      alert('Por favor, complete todos los campos requeridos.');
+    }
+  });
+</script>
