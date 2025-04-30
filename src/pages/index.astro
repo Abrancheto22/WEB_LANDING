@@ -7,6 +7,7 @@ import CourseCard from '../components/CourseCard.astro';
 import TestimonialSlider from '../components/TestimonialSlider.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
 import Imagen from '../assets/Docentes.jpg';
+import Docente1 from '../assets/Docente1.jpg';
 // Datos para las secciones
 const courses = [
   {
@@ -16,7 +17,7 @@ const courses = [
     rating: 5.0,  
     icon: "laptop",
     badge: "Más popular",
-    color: "indigo"
+    color: "yellow"
   },
   {
     title: "Neurociencia y Aprendizaje",
@@ -122,10 +123,10 @@ const testimonials = [
           
           <div class="mt-12 flex items-center gap-4">
             <div class="flex -space-x-4">
-              <img class="w-10 h-10 rounded-full border-2 border-white" src="/placeholder.svg" width="40" height="40" alt="Docente">
-              <img class="w-10 h-10 rounded-full border-2 border-white" src="/placeholder.svg" width="40" height="40" alt="Docente">
-              <img class="w-10 h-10 rounded-full border-2 border-white" src="/placeholder.svg" width="40" height="40" alt="Docente">
-              <img class="w-10 h-10 rounded-full border-2 border-white" src="/placeholder.svg" width="40" height="40" alt="Docente">
+              <img class="w-10 h-10 rounded-full border-2 border-white" src={Docente1.src} width="40" height="40" alt="Docente1">
+              <img class="w-10 h-10 rounded-full border-2 border-white" src={Docente1.src} width="40" height="40" alt="Docente">
+              <img class="w-10 h-10 rounded-full border-2 border-white" src={Docente1.src} width="40" height="40" alt="Docente">
+              <img class="w-10 h-10 rounded-full border-2 border-white" src={Docente1.src} width="40" height="40" alt="Docente">
             </div>
             <div>
               <p class="text-gray-700 font-medium">+2,500 docentes capacitados</p>
