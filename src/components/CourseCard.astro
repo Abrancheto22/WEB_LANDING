@@ -1,4 +1,5 @@
 ---
+
 export interface Props {
   title: string;
   description: string;
@@ -10,7 +11,7 @@ export interface Props {
   delay?: number;
 }
 
-const { title, description, price, rating, icon, badge, color = "indigo", delay = 0 } = Astro.props;
+const { title, description, price, rating,imagen, icon, badge, color = "indigo", delay = 0 } = Astro.props;
 
 const getBgColor = () => {
   switch (color) {
