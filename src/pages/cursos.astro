@@ -1,0 +1,289 @@
+---
+// Importaciones
+import '../styles/global.css';
+import Layout from '../layouts/Layout.astro';
+import StatsCounter from '../components/StatsCounter.astro';
+import CourseCard from '../components/CourseCard.astro';
+import TestimonialSlider from '../components/TestimonialSlider.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import Imagen from '../assets/Docentes.jpg';
+// Datos para las secciones
+const courses = [
+  {
+    title: "Tecnologías Digitales en el Aula",
+    description: "Aprende a integrar herramientas digitales en tus clases para mejorar el aprendizaje de tus estudiantes.",
+    price: "149",
+    rating: 5.0,  
+    icon: "laptop",
+    badge: "Más popular",
+    color: "indigo"
+  },
+  {
+    title: "Neurociencia y Aprendizaje",
+    description: "Conoce cómo funciona el cerebro durante el aprendizaje y aplica estrategias basadas en neurociencia.",
+    price: "129",
+    rating: 4.7,
+    icon: "brain",
+    color: "blue"
+  },
+  {
+    title: "Aula Invertida (Flipped Classroom)",
+    description: "Transforma tu metodología de enseñanza con el modelo de aula invertida para un aprendizaje más activo.",
+    price: "159",
+    rating: 4.9,
+    icon: "rocket",
+    badge: "Nuevo",
+    color: "purple"
+  },
+  {
+    title: "Tecnologías Digitales en el Aula",
+    description: "Aprende a integrar herramientas digitales en tus clases para mejorar el aprendizaje de tus estudiantes.",
+    price: "149",
+    rating: 5.0,  
+    icon: "laptop",
+    badge: "Más popular",
+    color: "indigo"
+  },
+  {
+    title: "Neurociencia y Aprendizaje",
+    description: "Conoce cómo funciona el cerebro durante el aprendizaje y aplica estrategias basadas en neurociencia.",
+    price: "129",
+    rating: 4.7,
+    icon: "brain",
+    color: "blue"
+  },
+  {
+    title: "Aula Invertida (Flipped Classroom)",
+    description: "Transforma tu metodología de enseñanza con el modelo de aula invertida para un aprendizaje más activo.",
+    price: "159",
+    rating: 4.9,
+    icon: "rocket",
+    badge: "Nuevo",
+    color: "purple"
+  },
+  {
+    title: "Tecnologías Digitales en el Aula",
+    description: "Aprende a integrar herramientas digitales en tus clases para mejorar el aprendizaje de tus estudiantes.",
+    price: "149",
+    rating: 5.0,  
+    icon: "laptop",
+    badge: "Más popular",
+    color: "indigo"
+  },
+  {
+    title: "Neurociencia y Aprendizaje",
+    description: "Conoce cómo funciona el cerebro durante el aprendizaje y aplica estrategias basadas en neurociencia.",
+    price: "129",
+    rating: 4.7,
+    icon: "brain",
+    color: "blue"
+  },
+  {
+    title: "Aula Invertida (Flipped Classroom)",
+    description: "Transforma tu metodología de enseñanza con el modelo de aula invertida para un aprendizaje más activo.",
+    price: "159",
+    rating: 4.9,
+    icon: "rocket",
+    badge: "Nuevo",
+    color: "purple"
+  },
+  {
+    title: "Tecnologías Digitales en el Aula",
+    description: "Aprende a integrar herramientas digitales en tus clases para mejorar el aprendizaje de tus estudiantes.",
+    price: "149",
+    rating: 5.0,  
+    icon: "laptop",
+    badge: "Más popular",
+    color: "indigo"
+  },
+  {
+    title: "Neurociencia y Aprendizaje",
+    description: "Conoce cómo funciona el cerebro durante el aprendizaje y aplica estrategias basadas en neurociencia.",
+    price: "129",
+    rating: 4.7,
+    icon: "brain",
+    color: "blue"
+  },
+  {
+    title: "Aula Invertida (Flipped Classroom)",
+    description: "Transforma tu metodología de enseñanza con el modelo de aula invertida para un aprendizaje más activo.",
+    price: "159",
+    rating: 4.9,
+    icon: "rocket",
+    badge: "Nuevo",
+    color: "purple"
+  },
+  {
+    title: "Tecnologías Digitales en el Aula",
+    description: "Aprende a integrar herramientas digitales en tus clases para mejorar el aprendizaje de tus estudiantes.",
+    price: "149",
+    rating: 5.0,  
+    icon: "laptop",
+    badge: "Más popular",
+    color: "indigo"
+  },
+  {
+    title: "Neurociencia y Aprendizaje",
+    description: "Conoce cómo funciona el cerebro durante el aprendizaje y aplica estrategias basadas en neurociencia.",
+    price: "129",
+    rating: 4.7,
+    icon: "brain",
+    color: "blue"
+  },
+  {
+    title: "Aula Invertida (Flipped Classroom)",
+    description: "Transforma tu metodología de enseñanza con el modelo de aula invertida para un aprendizaje más activo.",
+    price: "159",
+    rating: 4.9,
+    icon: "rocket",
+    badge: "Nuevo",
+    color: "purple"
+  },
+];
+---
+
+<Layout title="Cursos - DocentesPro">
+  <main class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <!-- Navbar -->
+    <nav class="fixed w-full bg-white/90 backdrop-blur-md py-4 px-6 shadow-sm z-50">
+      <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <a href="/" class="text-2xl font-bold text-indigo-600 flex items-center gap-2">
+          <i class="fas fa-graduation-cap text-3xl"></i>
+          <span>DocentesPro</span>
+        </a>
+        
+        <div class="hidden md:flex space-x-8">
+          <a href="/" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Inicio</a>
+          <a href="/cursos" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Cursos</a>
+          <a href="#metodologia" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Metodología</a>
+          <a href="#testimonios" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Testimonios</a>
+          <a href="#contacto" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Contacto</a>
+        </div>
+        
+        <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-full shadow-lg hover:shadow-indigo-300/50 transition-all transform hover:scale-105">
+          Iniciar/Resgistrarse
+        </button>
+        
+        <button id="menu-button" class="md:hidden text-gray-700 focus:outline-none">
+          <i class="fas fa-bars text-2xl"></i>
+        </button>
+      </div>
+    </nav>
+    <br>    
+
+    <!-- Courses Section -->
+    <section id="cursos" class="py-20">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16" data-aos="fade-up">
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Todos nuestros cursos destacados</h2>
+          <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
+            Diseñados por expertos en pedagogía y tecnología educativa para ayudarte a innovar en el aula
+          </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {courses.map((course, index) => (
+            <CourseCard 
+              title={course.title}
+              description={course.description}
+              price={course.price}
+              rating={course.rating}
+              icon={course.icon}
+              badge={course.badge}
+              color={course.color}
+              delay={index * 100}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<script>
+  // Mobile menu toggle
+  document.addEventListener('DOMContentLoaded', () => {
+    const menuButton = document.getElementById('menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    if (menuButton && mobileMenu) {
+      menuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+    }
+    
+    // Tabs functionality
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // Remove active class from all buttons and contents
+        tabButtons.forEach(btn => btn.classList.remove('active', 'border-indigo-600', 'text-indigo-600'));
+        tabButtons.forEach(btn => btn.classList.add('text-gray-500'));
+        tabContents.forEach(content => content.classList.add('hidden'));
+        tabContents.forEach(content => content.classList.remove('active'));
+        
+        // Add active class to clicked button and corresponding content
+        button.classList.add('active', 'border-indigo-600', 'text-indigo-600');
+        button.classList.remove('text-gray-500');
+        const tabId = button.getAttribute('data-tab');
+        const activeContent = document.getElementById(tabId);
+        if (activeContent) {
+          activeContent.classList.add('active');
+          activeContent.classList.remove('hidden');
+        }
+      });
+    });
+    
+    // Initialize AOS
+    if (typeof AOS !== 'undefined') {
+      AOS.init({
+        duration: 800,
+        once: true
+      });
+    }
+    
+    // Counter animation
+    const animateCounters = () => {
+      const counters = document.querySelectorAll('.counter');
+      const speed = 200;
+      
+      counters.forEach(counter => {
+        const target = parseInt(counter.getAttribute('data-target') || '0');
+        let count = 0;
+        const increment = Math.ceil(target / speed);
+        
+        const updateCount = () => {
+          if (count < target) {
+            count += increment;
+            counter.textContent = count > target ? target.toString() : count.toString();
+            setTimeout(updateCount, 1);
+          } else {
+            counter.textContent = target.toString();
+          }
+        };
+        
+        updateCount();
+      });
+    };
+    
+    // Trigger counter animation when in view
+    const observeCounters = () => {
+      const countersSection = document.querySelector('#stats-section');
+      if (!countersSection) return;
+      
+      const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          animateCounters();
+          observer.unobserve(countersSection);
+        }
+      }, { threshold: 0.5 });
+      
+      observer.observe(countersSection);
+    };
+    
+    observeCounters();
+  });
+</script>
+
