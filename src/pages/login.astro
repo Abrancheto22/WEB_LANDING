@@ -1,0 +1,63 @@
+---
+import '../styles/global.css';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+    <div class="flex items-center justify-center min-h-screen bg-gray-100">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+          <h1 class="text-2xl font-semibold text-center text-gray-800 mb-6">Iniciar Sesión</h1>
+          <form id="loginForm" class="space-y-4">
+            <input type="text" id="username" placeholder="Usuario" required
+              class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          
+            <input type="password" id="password" placeholder="Contraseña" required
+              class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+    
+            <button type="submit"
+              class="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition-all">Ingresar</button>
+    
+            <p class="text-center text-sm text-gray-600">¿No tienes cuenta?
+              <a href="/register" class="text-indigo-600 hover:underline">Regístrate aquí</a>
+            </p>
+          </form>
+          <p id="error" class="text-red-600 text-center mt-4"></p>
+        </div>
+      </div>
+
+      <script type="module">
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+          e.preventDefault();
+      
+          const username = document.getElementById('username').value;
+          const password = document.getElementById('password').value;
+      
+          try {
+            // Realiza la solicitud POST para obtener el token JWT
+            const res = await fetch('http://localhost:8080/api/auth/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ username, password })
+            });
+      
+            // Verifica si la respuesta fue exitosa
+            if (!res.ok) {
+              throw new Error('Credenciales incorrectas');
+            }
+      
+            // Obtiene el token de la respuesta
+            const data = await res.json();
+            console.log(data.token); // Verifica si el token está en el formato correcto
+      
+            // Guarda el token en el almacenamiento local del navegador
+            localStorage.setItem('token', data.token);
+      
+            // Redirige al usuario a la página de inicio
+            window.location.href = 'http://localhost:8080/app/index';
+          } catch (error) {
+            // Muestra un mensaje de error si ocurre alguna excepción
+            document.getElementById('error').textContent = error.message;
+          }
+        });
+      </script>      
+</Layout>
