@@ -4,6 +4,43 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout>
+  <!-- Navbar -->
+  <nav class="fixed w-full bg-white/90 backdrop-blur-md py-4 px-6 shadow-sm z-50">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <a href="/" class="text-2xl font-bold text-indigo-600 flex items-center gap-2">
+        <i class="fas fa-graduation-cap text-3xl"></i>
+        <span>DocentesPro</span>
+      </a>
+      
+      <div class="hidden md:flex space-x-8">
+        <a href="/" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Inicio</a>
+        <a href="/cursos" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Cursos</a>
+        <a href="#metodologia" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Metodología</a>
+        <a href="#testimonios" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Testimonios</a>
+        <a href="#contacto" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Contacto</a>
+      </div>
+      
+      <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-full shadow-lg hover:shadow-indigo-300/50 transition-all transform hover:scale-105">
+      <a href="/login"> Iniciar/Resgistrarse</a>  
+     
+      </button>
+      
+      <button id="menu-button" class="md:hidden text-gray-700 focus:outline-none">
+        <i class="fas fa-bars text-2xl"></i>
+      </button>
+    </div>
+    
+    <!-- Menú móvil -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white absolute left-0 right-0 mt-4 p-4 shadow-lg rounded-b-lg">
+      <div class="flex flex-col space-y-3">
+        <a href="/" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Inicio</a>
+        <a href="/cursos" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Cursos</a>
+        <a href="#metodologia" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Metodología</a>
+        <a href="#testimonios" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Testimonios</a>
+        <a href="#contacto" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Contacto</a>
+      </div>
+    </div>
+  </nav>
     <div class="flex items-center justify-center min-h-screen bg-gray-100">
         <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
           <h1 class="text-2xl font-semibold text-center text-gray-800 mb-6">Iniciar Sesión</h1>
@@ -40,7 +77,7 @@ import Layout from '../layouts/Layout.astro';
               body: JSON.stringify({ username, password })
             });
       
-            // Verifica si la respuesta fue exitosa
+            
             if (!res.ok) {
               throw new Error('Credenciales incorrectas');
             }
@@ -53,7 +90,7 @@ import Layout from '../layouts/Layout.astro';
             localStorage.setItem('token', data.token);
       
             // Redirige al usuario a la página de inicio
-            window.location.href = 'http://localhost:8080/app/index';
+            window.location.href = `http://localhost:8080/app/index?token=${data.token}`;
           } catch (error) {
             // Muestra un mensaje de error si ocurre alguna excepción
             document.getElementById('error').textContent = error.message;
