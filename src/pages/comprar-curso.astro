@@ -1,0 +1,510 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Imagen from '../assets/QR2.jpg';
+
+const { searchParams } = Astro.url;
+
+// Extraemos los parámetros de la URL
+const title = searchParams.get('title') || 'Adquirir Curso';
+const description = searchParams.get('description') || 'Descripcion del curso';
+const color = searchParams.get('color') || 'indigo';
+
+const course = {
+  title,
+  description,
+  color
+};
+
+const getBgColor = () => {
+  switch (course.color) {
+    case "indigo":
+      return "bg-gradient-to-r from-indigo-600 to-indigo-700";
+    case "blue":
+      return "bg-gradient-to-r from-blue-600 to-blue-700";
+    case "purple":
+      return "bg-gradient-to-r from-purple-600 to-purple-700";
+    case "yellow":
+      return "bg-gradient-to-r from-yellow-600 to-yellow-700";
+    default:
+      return "bg-gradient-to-r from-indigo-600 to-indigo-700";
+  }
+};
+
+const getIcon = () => {
+  switch (course.color) {
+    case "indigo":
+      return "fas fa-laptop";
+    case "blue":
+      return "fas fa-brain";
+    case "purple":
+      return "fas fa-rocket";
+    case "yellow":
+      return "fas fa-star";
+    default:
+      return "fas fa-laptop";
+  }
+};
+
+const getIconColor = () => {
+  switch (course.color) {
+    case "yellow":
+      return "text-yellow-600";
+    default:
+      return "text-gray-600";
+  }
+};
+
+const handlePaymentMethodChange = () => {
+  const metodoPagoSelect = document.querySelector('select[name="metodoPago"]');
+  if (!metodoPagoSelect) {
+    console.error('No se encontró el select de método de pago');
+    return;
+  }
+
+  const metodoPago = metodoPagoSelect.value;
+
+  const numeroCuentaDiv = document.getElementById('numeroCuentaDiv');
+  const bancoDiv = document.getElementById('bancoDiv');
+  const imagenComprobanteDiv = document.getElementById('imagenComprobanteDiv');
+  const imagenYapeDiv = document.getElementById('imagenYapeDiv');
+
+  if (numeroCuentaDiv) {
+    numeroCuentaDiv.style.display = metodoPago === 'deposito' ? 'block' : 'none';
+  }
+  if (bancoDiv) {
+    bancoDiv.style.display = metodoPago === 'deposito' ? 'block' : 'none';
+  }
+  if (imagenComprobanteDiv) {
+    imagenComprobanteDiv.style.display = metodoPago === 'deposito' ? 'block' : 'none';
+  }
+  if (imagenYapeDiv) {
+    imagenYapeDiv.style.display = metodoPago === 'pago_movil' ? 'block' : 'none';
+  }
+};
+
+const handleSubmit = async (e: SubmitEvent) => {
+  e.preventDefault();
+  const form = e.target;
+  
+  if (!form || !(form instanceof HTMLFormElement)) {
+    alert('Error: No se pudo encontrar el formulario.');
+    return;
+  }
+  
+  // Verificar que el formulario tenga todos los campos requeridos
+  const requiredFields = ['nombre', 'email', 'telefono', 'metodoPago', 'curso', 'precio'];
+  const missingFields = requiredFields.filter(field => !form.querySelector(`[name="${field}"]`));
+  
+  if (missingFields.length > 0) {
+    alert('Error: Algunos campos requeridos no están presentes en el formulario.');
+    console.error('Campos faltantes:', missingFields);
+    return;
+  }
+
+  // Validar que los campos requeridos estén llenos
+  const emptyFields = requiredFields.filter(field => !form.querySelector(`[name="${field}"]`)?.value);
+  
+  if (emptyFields.length > 0) {
+    alert('Por favor, completa todos los campos requeridos.');
+    return;
+  }
+
+  // Obtener el curso y precio del select
+  const cursoSelect = form.querySelector('select[name="curso"]') as HTMLSelectElement;
+  if (!cursoSelect) {
+    alert('Error: No se pudo encontrar el select del curso.');
+    return;
+  }
+
+  const cursoOption = cursoSelect.options[cursoSelect.selectedIndex];
+  if (!cursoOption) {
+    alert('Error: No se seleccionó ningún curso.');
+    return;
+  }
+
+  const cursoText = cursoOption.text;
+  const precioMatch = cursoText.match(/\$(\d+(?:\.\d{2})?)/);
+  const precio = precioMatch ? precioMatch[1] : '0.00';
+
+  // Crear el objeto de datos
+  const formData = {
+    nombre: form.nombre.value,
+    email: form.email.value,
+    telefono: form.telefono.value,
+    metodoPago: form.metodoPago.value,
+    numeroCuenta: form.numeroCuenta?.value || '',
+    banco: form.banco?.value || '',
+    curso: cursoText,
+    precio
+  };
+
+  try {
+    // Mostrar mensaje de carga
+    const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+    const originalText = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.textContent = 'Enviando...';
+
+    const response = await fetch('/api/send-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert('¡Boleta enviada exitosamente! Se ha enviado un correo con los detalles de tu compra.');
+      window.location.href = '/';
+    } else {
+      throw new Error(data.error || 'Error al enviar la boleta');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Error al enviar la boleta. Por favor, intenta nuevamente.');
+  } finally {
+    // Restaurar el botón
+    const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+    submitButton.disabled = false;
+    submitButton.textContent = 'Comprar curso';
+  }
+};
+
+---
+
+<script>
+  // Inicializar el manejo de eventos cuando el DOM esté listo
+  document.addEventListener('DOMContentLoaded', () => {
+    // Manejar cambio de método de pago
+    const metodoPagoSelect = document.querySelector('select[name="metodoPago"]');
+    if (metodoPagoSelect) {
+      metodoPagoSelect.addEventListener('change', handlePaymentMethodChange);
+      // Ejecutar una vez al cargar para mostrar los campos correspondientes
+      handlePaymentMethodChange();
+    }
+
+    // Manejar envío del formulario
+    const form = document.querySelector('form');
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+          await handleSubmit(e);
+        } catch (error) {
+          console.error('Error:', error);
+          alert('Error al procesar el formulario. Por favor, intenta nuevamente.');
+        }
+      });
+    }
+  });
+</script>
+
+<div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto">
+    <div class="bg-white shadow-xl rounded-lg p-8">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <div class="space-y-2">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">
+              {course.title}
+            </h1>
+            <div class="flex items-center space-x-3">
+              <div class="flex items-center space-x-2">
+                <i class="${getIcon()} ${getIconColor()} text-2xl"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button 
+          onclick="window.history.back()"
+          class="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300 text-gray-700 hover:text-gray-900 transition-all duration-200"
+        >
+          <i class="fas fa-arrow-left mr-2"></i>
+          Volver
+        </button>
+      </div>
+
+      <div class="mb-8">
+        <p class="text-gray-600 leading-relaxed">
+          {course.description}
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <form class="space-y-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Curso</label>
+            <select 
+              name="curso"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              required
+            >
+              <option value="">Selecciona un curso...</option>
+              <option value="curso1">Desarrollo Web Moderno - $199</option>
+              <option value="curso2">Machine Learning - $299</option>
+              <option value="curso3">Desarrollo Movil - $149</option>
+              <option value="curso4">Marketing Digital - $179</option>
+              <option value="curso5">Data Science - $249</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Nombre completo</label>
+            <input 
+              type="text" 
+              name="nombre"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400"
+              required 
+              placeholder="Escribe tu nombre completo"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input 
+              type="email" 
+              name="email"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400"
+              required 
+              placeholder="ejemplo@email.com"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Telefono</label>
+            <input 
+              type="tel" 
+              name="telefono"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400"
+              required 
+              placeholder="Ejemplo: +51 987654321"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Metodo de pago</label>
+            <select 
+              name="metodoPago"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              required 
+              onchange="handlePaymentMethodChange()"
+            >
+              <option value="">Selecciona un metodo de pago...</option>
+              <option value="deposito">Deposito en efectivo</option>
+              <option value="pago_movil">Yape</option>
+            </select>
+          </div>
+
+          <div id="numeroCuentaDiv" class="hidden">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Numero de cuenta</label>
+            <input 
+              type="text" 
+              name="numeroCuenta"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+
+          <div id="bancoDiv" class="hidden">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Banco</label>
+            <input 
+              type="text" 
+              name="banco"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+
+          <div id="imagenComprobanteDiv" class="hidden">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Comprobante de pago (Deposito)</label>
+            <input 
+              type="file" 
+              name="imagenComprobante"
+              accept="image/*"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+
+          <div id="imagenYapeDiv" class="hidden">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Comprobante de pago Yape</label>
+            <input 
+              type="file" 
+              name="imagenYape"
+              accept="image/*"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+
+          <div class="flex justify-end space-x-4">
+            <button 
+              type="button" 
+              onclick="window.history.back()"
+              class="px-6 py-2 bg-gray-200 rounded-md hover:bg-gray-300 text-gray-700 hover:text-gray-900 transition-all duration-200"
+            >
+              <i class="fas fa-arrow-left mr-2"></i>
+              Volver
+            </button>
+            <button 
+              type="submit"
+              class="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-all duration-200"
+            >
+              <i class="fas fa-shopping-cart mr-2"></i>
+              Comprar curso
+            </button>
+          </div>
+        </form>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 space-y-4 hidden lg:block">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Vista previa de la boleta</h3>
+          <div class="border-b pb-4">
+            <div class="flex justify-between">
+              <span class="text-gray-600">Curso seleccionado:</span>
+              <span class="font-semibold" id="boleta-curso">No seleccionado</span>
+            </div>
+            <div class="flex justify-between mt-2">
+              <span class="text-gray-600">Precio:</span>
+              <span class="font-semibold" id="boleta-precio">$0.00</span>
+            </div>
+          </div>
+          <div class="border-b pb-4">
+            <div class="flex justify-between">
+              <span class="text-gray-600">Metodo de pago:</span>
+              <span class="font-semibold" id="boleta-metodo">No seleccionado</span>
+            </div>
+            <div id="boleta-detalle" class="hidden mt-2">
+              <div class="flex justify-between">
+                <span class="text-gray-600">Banco:</span>
+                <span class="font-semibold" id="boleta-banco">No seleccionado</span>
+              </div>
+              <div class="flex justify-between mt-2">
+                <span class="text-gray-600">Numero de cuenta:</span>
+                <span class="font-semibold" id="boleta-numero">No seleccionado</span>
+              </div>
+            </div>
+            <div id="yape-qr" class="hidden mt-4">
+              <h4 class="text-sm font-medium text-gray-700 mb-2">QR de Yape</h4>
+              <div class="w-96 h-96 mx-auto">
+                <img src={Imagen.src} alt="QR de Yape" class="w-full h-full object-contain">
+              </div>
+            </div>
+          </div>
+          <div class="pt-4">
+            <h4 class="text-sm font-medium text-gray-700 mb-2">Total a pagar:</h4>
+            <div class="text-xl font-bold text-indigo-600" id="boleta-total">$0.00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</Layout>
+
+<script>
+  const handlePaymentMethodChange = () => {
+    const selectElement = document.querySelector('select[name="metodoPago"]') as HTMLSelectElement;
+    if (!selectElement) return;
+    
+    const method = selectElement.value;
+    const numeroCuentaDiv = document.getElementById('numeroCuentaDiv');
+    const bancoDiv = document.getElementById('bancoDiv');
+    const imagenComprobanteDiv = document.getElementById('imagenComprobanteDiv');
+    const boletaDetalle = document.getElementById('boleta-detalle');
+    const yapeQr = document.getElementById('yape-qr');
+    const imagenYapeDiv = document.getElementById('imagenYapeDiv');
+
+    if (!numeroCuentaDiv || !bancoDiv || !imagenComprobanteDiv || !boletaDetalle || !yapeQr || !imagenYapeDiv) return;
+
+    if (method === 'deposito') {
+      numeroCuentaDiv.classList.remove('hidden');
+      bancoDiv.classList.remove('hidden');
+      boletaDetalle.classList.remove('hidden');
+      imagenComprobanteDiv.classList.remove('hidden');
+      imagenYapeDiv.classList.add('hidden');
+      yapeQr.classList.add('hidden');
+    } else if (method === 'pago_movil') {
+      numeroCuentaDiv.classList.add('hidden');
+      bancoDiv.classList.add('hidden');
+      boletaDetalle.classList.add('hidden');
+      imagenComprobanteDiv.classList.add('hidden');
+      imagenYapeDiv.classList.remove('hidden');
+      yapeQr.classList.remove('hidden');
+    } else {
+      numeroCuentaDiv.classList.add('hidden');
+      bancoDiv.classList.add('hidden');
+      boletaDetalle.classList.add('hidden');
+      imagenComprobanteDiv.classList.add('hidden');
+      imagenYapeDiv.classList.add('hidden');
+      yapeQr.classList.add('hidden');
+    }
+
+    updateBoletaPreview();
+  };
+
+  const updateBoletaPreview = () => {
+    const cursoSelect = document.querySelector('select[name="curso"]') as HTMLSelectElement;
+    const metodoSelect = document.querySelector('select[name="metodoPago"]') as HTMLSelectElement;
+    const bancoSelect = document.querySelector('select[name="banco"]') as HTMLSelectElement;
+    const numeroCuentaInput = document.querySelector('input[name="numeroCuenta"]') as HTMLInputElement;
+
+    if (!cursoSelect || !metodoSelect) return;
+
+    const cursoElement = document.getElementById('boleta-curso');
+    const precioElement = document.getElementById('boleta-precio');
+    const metodoElement = document.getElementById('boleta-metodo');
+    const bancoElement = document.getElementById('boleta-banco');
+    const numeroElement = document.getElementById('boleta-numero');
+    const totalElement = document.getElementById('boleta-total');
+
+    if (!cursoElement || !precioElement || !metodoElement) return;
+
+    // Actualizar curso y precio
+    const cursoOption = cursoSelect.options[cursoSelect.selectedIndex];
+    const cursoText = cursoOption.text;
+    const precioMatch = cursoText.match(/\$(\d+(?:\.\d{2})?)/);
+    const precio = precioMatch ? precioMatch[1] : '0.00';
+
+    cursoElement.textContent = cursoText;
+    precioElement.textContent = `$${precio}`;
+    if (totalElement) {
+      totalElement.textContent = `$${precio}`;
+    }
+
+    // Actualizar método de pago
+    metodoElement.textContent = metodoSelect.value === '' 
+      ? 'No seleccionado' 
+      : metodoSelect.options[metodoSelect.selectedIndex].text;
+
+    // Actualizar banco y número de cuenta si están disponibles
+    if (bancoElement && bancoSelect) {
+      bancoElement.textContent = bancoSelect.value === '' 
+        ? 'No seleccionado' 
+        : bancoSelect.options[bancoSelect.selectedIndex].text;
+    }
+
+    if (numeroElement && numeroCuentaInput) {
+      numeroElement.textContent = numeroCuentaInput.value || 'No seleccionado';
+    }
+  };
+
+  // Ejecutar la configuración cuando el componente se monta
+  if (typeof window !== 'undefined') {
+    const selectElement = document.querySelector('select[name="metodoPago"]');
+    if (selectElement) {
+      selectElement.addEventListener('change', handlePaymentMethodChange);
+      // Ejecutar la función una vez al cargar para mostrar los campos correspondientes
+      handlePaymentMethodChange();
+    }
+
+    // Actualizar la vista previa cuando cambien los campos
+    const cursoSelect = document.querySelector('select[name="curso"]');
+    const bancoSelect = document.querySelector('select[name="banco"]');
+    const numeroCuentaInput = document.querySelector('input[name="numeroCuenta"]');
+
+    if (cursoSelect) cursoSelect.addEventListener('change', updateBoletaPreview);
+    if (bancoSelect) bancoSelect.addEventListener('change', updateBoletaPreview);
+    if (numeroCuentaInput) numeroCuentaInput.addEventListener('input', updateBoletaPreview);
+
+    // Inicializar la vista previa
+    updateBoletaPreview();
+  }
+</script>

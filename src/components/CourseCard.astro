@@ -8,9 +8,10 @@ interface Props {
   badge?: string;
   color?: string;
   delay?: number;
+  children?: React.ReactNode;
 }
 
-const { title, description, price, rating, icon, badge, color = "indigo", delay = 0 } = Astro.props as Props;
+const { title, description, price, rating, icon, badge, color = "indigo", delay = 0, children } = Astro.props as Props;
 
 const getBgColor = () => {
   switch (color) {
@@ -62,6 +63,7 @@ const getRatingStars = () => {
 };
 
 const delayClass = delay ? `delay-${delay * 100}` : '';
+
 ---
 
 <div class="course-card animate-slide-in ${delayClass} p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden">
@@ -91,13 +93,13 @@ const delayClass = delay ? `delay-${delay * 100}` : '';
       <span class="text-xl font-bold text-gray-900">
         ${price}
       </span>
-      <button 
-        onclick="handleShowModal()"
-        class="px-6 py-2 rounded-full bg-white text-gray-800 font-semibold hover:bg-gray-100 transition-colors">
+      <a 
+        href={`/comprar-curso?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&price=${encodeURIComponent(price)}&color=${encodeURIComponent(color)}`}
+        class="px-6 py-2 rounded-full bg-white text-gray-800 font-semibold hover:bg-gray-100 transition-colors block"
+        onclick="event.preventDefault(); window.location.href = this.href"
+      >
         Ver más
-      </button>
+      </a>
     </div>
   </div>
 </div>
-
-
