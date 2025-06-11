@@ -5,7 +5,7 @@ import Layout from '../layouts/Layout.astro';
 import CourseCard from '../components/CourseCard.astro';
 // Datos para las secciones
 const courses = [
-  {
+  { 
     title: "Tecnologías Digitales en el Aula",
     description: "Aprende a integrar herramientas digitales en tus clases para mejorar el aprendizaje de tus estudiantes.",
     price: "149",
@@ -224,10 +224,12 @@ const courses = [
         button.classList.add('active', 'border-indigo-600', 'text-indigo-600');
         button.classList.remove('text-gray-500');
         const tabId = button.getAttribute('data-tab');
-        const activeContent = document.getElementById(tabId);
-        if (activeContent) {
-          activeContent.classList.add('active');
-          activeContent.classList.remove('hidden');
+        if (tabId) {
+          const activeContent = document.getElementById(tabId);
+          if (activeContent) {
+            activeContent.classList.add('active');
+            activeContent.classList.remove('hidden');
+          }
         }
       });
     });

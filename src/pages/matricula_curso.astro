@@ -66,7 +66,7 @@ import Layout from '../layouts/Layout.astro';
             <input type="password" id="password" placeholder="Contraseña" required
               class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
     
-            <button type="submit"
+            <button type="submit" id="emailLogin"
                 class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-all">
           Ingresar
         </button>
@@ -167,22 +167,39 @@ import Layout from '../layouts/Layout.astro';
   const coursePreview = document.getElementById('coursePreview');
   const emailLogin = document.getElementById('emailLogin');
 
-  openBtn.onclick = () => modal.classList.remove('hidden');
-  cancelBtn.onclick = () => modal.classList.add('hidden');
+  if (openBtn && modal) {
+    openBtn.onclick = () => modal.classList.remove('hidden');
+  } else {
+    console.error('Botón openBtn o modal no encontrado');
+  }
+
+  if (cancelBtn && modal) {
+    cancelBtn.onclick = () => modal.classList.add('hidden');
+  } else {
+    console.error('Botón cancelBtn o modal no encontrado');
+  }
 
   // Simular inicio de sesión exitoso solo para el botón de correo electrónico
-  emailLogin.addEventListener('click', function(e) {
-    e.preventDefault();
-    loginSection.classList.add('hidden');
-    coursePreview.classList.remove('hidden');
-  });
+  if (emailLogin && loginSection && coursePreview) {
+    emailLogin.addEventListener('click', function(e) {
+      e.preventDefault();
+      loginSection.classList.add('hidden');
+      coursePreview.classList.remove('hidden');
+    });
+  } else {
+    console.error('Botón emailLogin, loginSection o coursePreview no encontrados');
+  }
 
   // Validación adicional al enviar el formulario
-  const paymentForm = document.getElementById('paymentForm');
-  paymentForm.addEventListener('submit', function(e) {
-    if (!paymentForm.checkValidity()) {
-      e.preventDefault();
-      alert('Por favor, complete todos los campos requeridos.');
-    }
-  });
+  const paymentForm = document.getElementById('paymentForm') as HTMLFormElement | null;
+  if (paymentForm) {
+    paymentForm.addEventListener('submit', function(e) {
+      if (!paymentForm.checkValidity()) {
+        e.preventDefault();
+        alert('Por favor, complete todos los campos requeridos.');
+      }
+    });
+  } else {
+    console.error('Formulario de pago no encontrado');
+  }
 </script>
