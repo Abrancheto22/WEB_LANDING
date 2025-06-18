@@ -151,9 +151,9 @@ const courses = [
         <div class="hidden md:flex space-x-8">
           <a href="/" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Inicio</a>
           <a href="/cursos" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Cursos</a>
-          <a href="#metodologia" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Metodología</a>
-          <a href="#testimonios" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Testimonios</a>
-          <a href="#contacto" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Contacto</a>
+          <a href="/#metodologia" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Metodología</a>
+          <a href="/#testimonios" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Testimonios</a>
+          <a href="/#contacto" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Contacto</a>
         </div>
         
         <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-full shadow-lg hover:shadow-indigo-300/50 transition-all transform hover:scale-105">
@@ -165,6 +165,18 @@ const courses = [
         </button>
       </div>
     </nav>
+    
+    <!-- Menú móvil -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white absolute left-0 right-0 mt-4 p-4 shadow-lg rounded-b-lg z-40">
+      <div class="flex flex-col space-y-3">
+        <a href="/" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Inicio</a>
+        <a href="/cursos" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Cursos</a>
+        <a href="/#metodologia" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Metodología</a>
+        <a href="/#testimonios" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Testimonios</a>
+        <a href="/#contacto" class="text-gray-700 hover:text-indigo-600 transition-colors font-medium">Contacto</a>
+      </div>
+    </div>
+    
     <br>    
 
     <!-- Courses Section -->
@@ -178,7 +190,7 @@ const courses = [
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {courses.map((course, index) => (
+          {courses.map((course) => (
             <CourseCard 
               title={course.title}
               description={course.description}

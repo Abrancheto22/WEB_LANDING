@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmación de Pago</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #4f46e5;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+        .content {
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+        }
+        .button {
+            display: inline-block;
+            background-color: #4f46e5;
+            color: white !important;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            margin: 20px 0;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #6b7280;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>¡Pago Recibido!</h1>
+    </div>
+    <div class="content">
+        <p>Hola {{nombre}},</p>
+        <p>Hemos recibido tu pago para el curso <strong>{{curso}}</strong> por un monto de <strong>${{precio}}</strong>.</p>
+        
+        <p>Detalles de tu compra:</p>
+        <ul>
+            <li><strong>Curso:</strong> {{curso}}</li>
+            <li><strong>Monto:</strong> ${{precio}}</li>
+            <li><strong>Fecha:</strong> {{fecha}}</li>
+        </ul>
+
+        {{#if comprobante}}
+        <p>Hemos adjuntado una copia de tu comprobante de pago para tus registros.</p>
+        {{/if}}
+
+        <p>Nuestro equipo se pondrá en contacto contigo en las próximas 24-48 horas con los detalles de acceso al curso.</p>
+        
+        <p>Si tienes alguna pregunta, no dudes en responder a este correo.</p>
+        
+        <p>¡Gracias por tu compra!</p>
+        <p>El equipo de Cursos Online</p>
+    </div>
+    <div class="footer">
+        <p>Este es un correo automático, por favor no respondas a este mensaje.</p>
+        <p>© 2025 Cursos Online. Todos los derechos reservados.</p>
+    </div>
+</body>
+</html>

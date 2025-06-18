@@ -3,20 +3,15 @@ import type { APIRoute } from 'astro';
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const formData = await request.formData();
-    const data = Object.fromEntries(
-      Array.from(formData.entries()).map(([key, value]) => [
-        key,
-        value instanceof File ? value.name : String(value)
-      ])
-    );
+    // Leer el cuerpo como JSON
+    const data = await request.json();
 
     // Validar que todos los campos requeridos estén presentes
     const requiredFields = ['nombre', 'email', 'telefono', 'metodoPago', 'curso', 'precio'];
     const missingFields = requiredFields.filter(field => !data[field]);
     
     if (missingFields.length > 0) {
-      return new Response(JSON.stringify({ error: 'Faltan campos requeridos' }), {
+      return new Response(JSON.stringify({ error: 'Faltan campos requeridos', missing: missingFields }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
       });
@@ -66,7 +61,7 @@ export const POST: APIRoute = async ({ request }) => {
     });
   } catch (error) {
     console.error('Error al enviar correo:', error);
-    return new Response(JSON.stringify({ error: 'Error al enviar el correo' }), {
+    return new Response(JSON.stringify({ error: 'Error al enviar el correo', details: error.message }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
     });

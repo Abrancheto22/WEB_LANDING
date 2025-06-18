@@ -4,5 +4,15 @@ import tailwind from '@astrojs/tailwind';
 
 // https://astro.build/config
 export default defineConfig({
+  output: 'server', // Habilita el modo servidor
   integrations: [tailwind()],
+  server: {
+    port: 4321,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    }
+  },
+  // El middleware se carga automáticamente desde src/middleware/
 });
