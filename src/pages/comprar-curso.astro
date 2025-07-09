@@ -134,34 +134,52 @@ const getIconColor = () => {
         <!-- Contenido principal -->
         <div class="p-8">
           <form id="pagoForm" class="space-y-6" onsubmit="return enviarComprobante(event)">
-            <!-- Campo oculto para el curso seleccionado -->
-            <input type="hidden" id="cursoNombre" name="curso" value={selectedCourse?.title || ''} />
-            <input type="hidden" id="precioCursoInput" name="precio" value={selectedCourse?.price || '0'} />
-            <!-- Sección de información personal -->
-            <div class="bg-white p-6 rounded-xl border border-gray-200 mb-6">
+                    <!-- Campo oculto para el curso seleccionado -->
+                        <input type="hidden" id="cursoNombre" name="curso" value={selectedCourse?.title || ''} />
+                        <input type="hidden" id="precioCursoInput" name="precio" value={selectedCourse?.price || '0'} />
+                        <!-- Sección de información personal -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 mb-6">
               <h3 class="text-lg font-semibold text-gray-900 mb-4">Información personal</h3>
               <div class="space-y-4">
+                
+                <!-- Nombre completo -->
                 <div>
                   <label for="nombre" class="block text-sm font-medium text-gray-700 mb-1">Nombre completo</label>
                   <input 
                     type="text" 
-                    id="nombre" 
-                    name="nombre" 
+                    id="nombres" 
+                    name="nombres" 
                     required
                     class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     placeholder="Ingrese su nombre completo"
                   >
                 </div>
+
+                <!-- Apellidos -->
+                <div>
+                  <label for="apellidos" class="block text-sm font-medium text-gray-700 mb-1">Apellidos</label>
+                  <input 
+                    type="text" 
+                    id="apellidos" 
+                    name="apellidos" 
+                    required
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    placeholder="Ingrese sus apellidos"
+                  >
+                </div>
+
+                <!-- DNI y Teléfono -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
+                    <label for="dni" class="block text-sm font-medium text-gray-700 mb-1">DNI</label>
                     <input 
-                      type="email" 
-                      id="email" 
-                      name="email" 
+                      type="text" 
+                      id="dni" 
+                      name="dni"
+                      maxlength="8"
                       required
                       class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                      placeholder="ejemplo@correo.com"
+                      placeholder="Ingrese su DNI"
                     >
                   </div>
                   <div>
@@ -176,8 +194,36 @@ const getIconColor = () => {
                     >
                   </div>
                 </div>
+
+                <!-- Correo electrónico y Dirección -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
+                    <input 
+                      type="email" 
+                      id="correo" 
+                      name="correo" 
+                      required
+                      class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      placeholder="ejemplo@correo.com"
+                    >
+                  </div>
+                  <div>
+                    <label for="direccion" class="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
+                    <input 
+                      type="text" 
+                      id="direccion" 
+                      name="direccion"
+                      required
+                      class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      placeholder="Ingrese su dirección"
+                    >
+                  </div>
+                </div>
+
               </div>
             </div>
+
 
             <!-- Sección de información del curso -->
             <div class="bg-gray-50 p-6 rounded-xl">
@@ -614,28 +660,50 @@ const getIconColor = () => {
 
     // Configurar el envío del formulario
     const form = document.getElementById('pagoForm');
-    if (form) {
+      if (form) {
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         const submitButton = document.getElementById('submitButton') as HTMLButtonElement | null;
         const spinner = document.getElementById('spinner');
-        
+
         if (submitButton && spinner) {
-          // Deshabilitar el botón y mostrar el spinner
           submitButton.disabled = true;
           spinner.classList.remove('hidden');
-          
-          // Simular envío del formulario
-          try {
-            // Aquí iría la lógica para enviar el formulario
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            alert('¡Pago registrado correctamente!');
-          } catch (error) {
-            console.error('Error al procesar el pago:', error);
-            alert('Ocurrió un error al procesar el pago. Por favor, inténtalo de nuevo.');
-          } finally {
-            // Volver a habilitar el botón y ocultar el spinner
+        }
+
+        const formData = new FormData(form as HTMLFormElement);
+
+        // Agregar curso y precio del select
+        const cursoSelect = document.getElementById('cursoSelect') as HTMLSelectElement | null;
+        if (cursoSelect) {
+          const selectedOption = cursoSelect.options[cursoSelect.selectedIndex];
+          const precio = selectedOption?.getAttribute('data-price') || '0';
+          formData.set('curso', selectedOption?.value || '');
+          formData.set('precio', precio);
+        }
+
+        try {
+          const response = await fetch('http://localhost:8080/api/pagos', {
+            method: 'POST',
+            body: formData
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            alert('¡Pago registrado correctamente en Spring!');
+            console.log(result);
+            (form as HTMLFormElement).reset(); // Limpiar form si deseas
+          } else {
+            const errorText = await response.text();
+            alert('Error al registrar el pago.');
+            console.error(errorText);
+          }
+        } catch (error) {
+          console.error('Error en la solicitud:', error);
+          alert('Error de conexión con el servidor.');
+        } finally {
+          if (submitButton && spinner) {
             submitButton.disabled = false;
             spinner.classList.add('hidden');
           }
@@ -964,5 +1032,6 @@ const getIconColor = () => {
       metodoPago.addEventListener('change', handlePaymentMethodChange);
     }
   });
+
 </script>
 </Layout>
