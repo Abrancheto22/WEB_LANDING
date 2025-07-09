@@ -694,14 +694,16 @@ const getIconColor = () => {
           
             console.log(result);
             (form as HTMLFormElement).reset(); // Limpiar form si deseas
+            window.location.href = 'http://localhost:4321';
           } else {
             const errorText = await response.text();
          
             console.error(errorText);
+            window.location.href = 'http://localhost:4321';
           }
         } catch (error) {
           console.error('Error en la solicitud:', error);
-          
+          window.location.href = 'http://localhost:4321';
         } finally {
           if (submitButton && spinner) {
             submitButton.disabled = false;
