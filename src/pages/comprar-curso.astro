@@ -287,22 +287,31 @@ const getIconColor = () => {
 
                 <!-- Imagen de comprobante -->
                 <div id="imagenComprobanteDiv" class="hidden">
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Subir comprobante</label>
-                  <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Subir comprobante de depósito</label>
+                  <div id="dropZoneDeposito" class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-indigo-500 transition-colors duration-200">
                     <div class="space-y-1 text-center">
-                      <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                      <svg id="uploadIconDeposito" class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
                         <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                       </svg>
-                      <div class="flex text-sm text-gray-600">
-                        <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none">
-                          <span>Subir archivo</span>
-                          <input id="file-upload" name="file-upload" type="file" class="sr-only">
-                        </label>
-                        <p class="pl-1">o arrastra y suelta</p>
+                      <div id="fileInfoDeposito" class="hidden">
+                        <p id="fileNameDeposito" class="text-sm font-medium text-gray-700 truncate"></p>
+                        <p id="fileSizeDeposito" class="text-xs text-gray-500"></p>
+                        <button type="button" id="removeFileDeposito" class="mt-1 text-xs text-red-600 hover:text-red-500">
+                          Eliminar archivo
+                        </button>
                       </div>
-                      <p class="text-xs text-gray-500">
-                        PNG, JPG, GIF hasta 10MB
-                      </p>
+                      <div id="uploadPromptDeposito">
+                        <div class="flex flex-col items-center text-sm text-gray-600">
+                          <label for="comprobante-deposito" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none">
+                            <span>Subir comprobante</span>
+                            <input id="comprobante-deposito" name="comprobanteDeposito" type="file" class="sr-only" accept="image/*,.pdf">
+                          </label>
+                          <p class="mt-1">o arrastra y suelta</p>
+                        </div>
+                        <p class="text-xs text-gray-500">
+                          PNG, JPG, PDF hasta 10MB
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -465,6 +474,18 @@ const getIconColor = () => {
         actualizarPrecio();
       }
     }
+
+    // Configurar el manejador de cambio de método de pago
+    const metodoPago = document.getElementById('metodoPago');
+    if (metodoPago) {
+      metodoPago.addEventListener('change', handlePaymentMethodChange);
+      // Disparar el evento change para mostrar/ocultar los campos correspondientes
+      metodoPago.dispatchEvent(new Event('change'));
+    }
+
+    // Configurar la carga de archivos para ambos métodos de pago
+    setupFileUpload();
+    setupDepositoFileUpload();
   });
 
   const handlePaymentMethodChange = () => {
@@ -495,12 +516,14 @@ const getIconColor = () => {
 
     // Mostrar elementos según el método de pago
     if (method === 'deposito') {
+      // Para depósito bancario, mostramos el formulario de depósito
       numeroCuentaDiv.classList.remove('hidden');
       bancoDiv.classList.remove('hidden');
       boletaDetalle.classList.remove('hidden');
       imagenComprobanteDiv.classList.remove('hidden');
       boletaMetodo.textContent = 'Depósito Bancario';
     } else if (method === 'pago_movil') {
+      // Para pago móvil, mostramos el QR de Yape y el campo de subir comprobante
       imagenYapeDiv.classList.remove('hidden');
       yapeQr.classList.remove('hidden');
       comprobantePagoMovilDiv.classList.remove('hidden');
@@ -539,7 +562,133 @@ const getIconColor = () => {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 
-  // Función para manejar la selección de archivos
+  // Función para configurar la carga de archivos para depósito bancario
+  function setupDepositoFileUpload() {
+    const fileInput = document.getElementById('comprobante-deposito') as HTMLInputElement | null;
+    const dropZone = document.getElementById('dropZoneDeposito');
+    const uploadIcon = document.getElementById('uploadIconDeposito') as HTMLImageElement | null;
+    const fileInfo = document.getElementById('fileInfoDeposito');
+    const fileName = document.getElementById('fileNameDeposito');
+    const fileSize = document.getElementById('fileSizeDeposito');
+    const uploadPrompt = document.getElementById('uploadPromptDeposito');
+    const removeFileBtn = document.getElementById('removeFileDeposito');
+    
+    // Verificar que todos los elementos necesarios existan
+    if (!fileInput || !dropZone || !uploadIcon || !fileInfo || !fileName || !fileSize || !uploadPrompt || !removeFileBtn) {
+      console.error('No se pudieron encontrar todos los elementos necesarios para la carga de archivos');
+      return;
+    }
+
+    // Manejar cambio de archivo
+    fileInput.addEventListener('change', (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) handleFileSelection(file);
+    });
+
+    // Verificar que dropZone existe antes de agregar eventos
+    if (!dropZone) {
+      console.error('Error: No se pudo encontrar el área de arrastrar y soltar');
+      return;
+    }
+
+    // Manejar arrastrar y soltar
+    const eventTypes = ['dragenter', 'dragover', 'dragleave', 'drop'] as const;
+    
+    eventTypes.forEach(eventName => {
+      dropZone.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e: Event) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    // Solo proceder si dropZone existe
+    if (dropZone) {
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, highlight, false);
+      });
+
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, unhighlight, false);
+      });
+    }
+
+    function highlight(this: HTMLElement) {
+      this.classList.add('border-indigo-500', 'bg-indigo-50');
+    }
+
+    function unhighlight(this: HTMLElement) {
+      this.classList.remove('border-indigo-500', 'bg-indigo-50');
+    }
+
+    // Manejar soltar archivo
+    dropZone.addEventListener('drop', (e: DragEvent) => {
+      const dt = e.dataTransfer;
+      if (dt?.files.length) {
+        const input = fileInput as HTMLInputElement;
+        if (input) {
+          input.files = dt.files;
+          handleFileSelection(dt.files[0]);
+        }
+      }
+    });
+
+    // Manejar la selección de archivo
+    function handleFileSelection(file: File) {
+      // Validar tipo de archivo
+      const validTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+      if (!validTypes.includes(file.type)) {
+        mostrarNotificacion('Tipo de archivo no válido. Sube una imagen (JPG, PNG) o PDF.', 'error');
+        return;
+      }
+
+      // Validar tamaño (10MB máximo)
+      const maxSize = 10 * 1024 * 1024; // 10MB
+      if (file.size > maxSize) {
+        mostrarNotificacion('El archivo es demasiado grande. El tamaño máximo es 10MB.', 'error');
+        return;
+      }
+
+      // Verificar que todos los elementos necesarios existan
+      if (!fileName || !fileSize || !fileInfo || !uploadPrompt || !uploadIcon) {
+        console.error('Error: No se encontraron todos los elementos necesarios');
+        return;
+      }
+
+      // Actualizar la interfaz
+      fileName.textContent = file.name;
+      fileSize.textContent = formatFileSize(file.size);
+      fileInfo.classList.remove('hidden');
+      uploadPrompt.classList.add('hidden');
+      
+      // Mostrar vista previa si es una imagen
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          if (uploadIcon && e.target?.result) {
+            uploadIcon.src = e.target.result as string;
+            uploadIcon.classList.add('w-24', 'h-24', 'object-cover', 'rounded');
+          }
+        };
+        reader.readAsDataURL(file);
+      } else if (uploadIcon) {
+        uploadIcon.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCI+PHBhdGggc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2Utd2lkdGg9IjIiIGQ9IkNNOCAxNnYtMTZhMiAyIDAgMDEyLTJoOGEyIDIgMCAwMTIgMnYxMmEzIDMgMCAwMS0zIDNoLTlsLTQgNHY0eiIvPjwvc3ZnPg==';
+        uploadIcon.classList.remove('w-24', 'h-24', 'object-cover', 'rounded');
+      }
+    }
+
+    // Manejar botón de eliminar archivo
+    removeFileBtn.addEventListener('click', () => {
+      fileInput.value = '';
+      fileInfo.classList.add('hidden');
+      uploadPrompt.classList.remove('hidden');
+      uploadIcon.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCI+PHBhdGggc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2Utd2lkdGg9IjIiIGQ9IkNNOCAxNnYtMTZhMiAyIDAgMDEyLTJoOGEyIDIgMCAwMTIgMnYxMmEzIDMgMCAwMS0zIDNoLTlsLTQgNHY0eiIvPjwvc3ZnPg==';
+      uploadIcon.classList.remove('w-24', 'h-24', 'object-cover', 'rounded');
+    });
+  }
+
+  // Función para configurar la carga de archivos para pago móvil
   function setupFileUpload() {
     const fileInputSetup = document.getElementById('comprobante-pago-movil') as HTMLInputElement;
     const dropZone = document.getElementById('dropZone');
@@ -577,25 +726,35 @@ const getIconColor = () => {
     });
 
     function highlight() {
-      dropZone.classList.add('border-indigo-500', 'bg-indigo-50');
+      if (dropZone) {
+        dropZone.classList.add('border-indigo-500', 'bg-indigo-50');
+      }
     }
 
     function unhighlight() {
-      dropZone.classList.remove('border-indigo-500', 'bg-indigo-50');
+      if (dropZone) {
+        dropZone.classList.remove('border-indigo-500', 'bg-indigo-50');
+      }
     }
 
     // Manejar la caída de archivos
     dropZone.addEventListener('drop', (e) => {
       const dt = e.dataTransfer;
       if (dt?.files.length) {
-        fileInput.files = dt.files;
+const input = document.getElementById('comprobante-pago-movil') as HTMLInputElement;
+if (input) {
+  input.files = dt.files;
+}
         handleFileSelection(dt.files[0]);
       }
     });
 
     // Manejar la eliminación del archivo
     removeFileBtn.addEventListener('click', () => {
-      fileInput.value = '';
+      const fileInput = document.getElementById('comprobante-pago-movil') as HTMLInputElement;
+      if (fileInput) {
+        fileInput.value = '';
+      }
       uploadPrompt.classList.remove('hidden');
       fileInfo.classList.add('hidden');
       dropZone.classList.remove('border-green-500');
@@ -617,21 +776,37 @@ const getIconColor = () => {
       }
 
       // Mostrar información del archivo
-      fileName.textContent = file.name;
-      fileSize.textContent = formatFileSize(file.size);
+      if (fileName) {
+        fileName.textContent = file.name;
+      }
+      if (fileSize) {
+        fileSize.textContent = formatFileSize(file.size);
+      }
       
       // Actualizar la interfaz
-      uploadPrompt.classList.add('hidden');
-      fileInfo.classList.remove('hidden');
-      dropZone.classList.add('border-green-500');
+      if (uploadPrompt) {
+        uploadPrompt.classList.add('hidden');
+      }
+      if (fileInfo) {
+        fileInfo.classList.remove('hidden');
+      }
+      if (dropZone) {
+        dropZone.classList.add('border-green-500');
+      }
       
       // Mostrar vista previa si es una imagen
       if (file.type.startsWith('image/')) {
         const reader = new FileReader();
         reader.onload = (e) => {
-          uploadIcon.setAttribute('src', e.target?.result as string);
-          uploadIcon.classList.remove('text-gray-400');
-          uploadIcon.classList.add('w-24', 'h-24', 'object-cover', 'rounded');
+          if (uploadIcon) {
+            uploadIcon.setAttribute('src', e.target?.result as string);
+          }
+          if (uploadIcon) {
+            uploadIcon.classList.remove('text-gray-400');
+          }
+          if (uploadIcon) {
+            uploadIcon.classList.add('w-24', 'h-24', 'object-cover', 'rounded');
+          }
         };
         reader.readAsDataURL(file);
       }

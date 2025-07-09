@@ -190,7 +190,7 @@ const courses = [
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {courses.map((course) => (
+          {courses.map((course, index) => (
             <CourseCard 
               title={course.title}
               description={course.description}
