@@ -691,17 +691,17 @@ const getIconColor = () => {
 
           if (response.ok) {
             const result = await response.json();
-            alert('¡Pago registrado correctamente en Spring!');
+          
             console.log(result);
             (form as HTMLFormElement).reset(); // Limpiar form si deseas
           } else {
             const errorText = await response.text();
-            alert('Error al registrar el pago.');
+         
             console.error(errorText);
           }
         } catch (error) {
           console.error('Error en la solicitud:', error);
-          alert('Error de conexión con el servidor.');
+          
         } finally {
           if (submitButton && spinner) {
             submitButton.disabled = false;
